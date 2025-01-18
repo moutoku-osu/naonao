@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 // 記事を表すクラス
-public class Article implements Serializable { // implements Serializableが必要
+public class Article implements Serializable {
     private int id; // すべての記事で一意な番号
     private String title; // タイトル
+    private int titleLength; // タイトルの文字数
     private String body; // 本文
+    private int bodyLength; // 本文の文字数
     private String editorId; // 著者のユーザId
     private Timestamp entryDatetime; // 登録日時
 
@@ -18,13 +20,12 @@ public class Article implements Serializable { // implements Serializableが必�
     public Article(int id, String title, String body, String editorId, Timestamp entryDatetime) {
         super();
         this.id = id;
-        this.title = title;
-        this.body = body;
+        setTitle(title); // setTitleでtitleLengthを更新
+        setBody(body);   // setBodyでbodyLengthを更新
         this.editorId = editorId;
         this.entryDatetime = entryDatetime;
     }
 
-    // idと登録日時が確定していない場合用のコンストラクタ
     public Article(String title, String body, String editorId) {
         this(-1, title, body, editorId, null);
     }
@@ -43,6 +44,11 @@ public class Article implements Serializable { // implements Serializableが必�
 
     public void setTitle(String title) {
         this.title = title;
+        this.titleLength = title != null ? title.length() : 0; // タイトル文字数を更新
+    }
+
+    public int getTitleLength() {
+        return titleLength;
     }
 
     public String getBody() {
@@ -51,6 +57,11 @@ public class Article implements Serializable { // implements Serializableが必�
 
     public void setBody(String body) {
         this.body = body;
+        this.bodyLength = body != null ? body.length() : 0; // 本文文字数を更新
+    }
+
+    public int getBodyLength() {
+        return bodyLength;
     }
 
     public String getEditorId() {
@@ -69,22 +80,11 @@ public class Article implements Serializable { // implements Serializableが必�
         this.entryDatetime = entryDatetime;
     }
 
-    // タイトルの文字数を取得
-    public int getTitleLength() {
-        return title != null ? title.length() : 0;
-    }
-
-    // 本文の文字数を取得
-    public int getBodyLength() {
-        return body != null ? body.length() : 0;
-    }
-
-    // 記事情報を文字列として返す
     @Override
     public String toString() {
         return "記事ID: " + id + "\n"
-                + "タイトル: " + title + " (" + getTitleLength() + "文字)\n"
-                + "本文: " + body + " (" + getBodyLength() + "文字)\n"
+                + "タイトル: " + title + " (" + titleLength + "文字)\n"
+                + "本文: " + body + " (" + bodyLength + "文字)\n"
                 + "著者ID: " + editorId + "\n"
                 + "登録日時: " + (entryDatetime != null ? entryDatetime.toString() : "未登録");
     }
